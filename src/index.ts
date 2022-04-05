@@ -88,9 +88,21 @@ const inTheDarkAlone = (): void => {
   const initialize = (): void => {
     generatePlayer();
     console.log('무언가 거대한 의지가 속삭입니다 - 나아가라- 홀린듯 발걸음을 옮겨봅니다.');
-    console.log('어둠속에서 무언가 비명을 지르며 달려옵니다!');
+    console.log('아무리 생각해도 왜 이곳에 자신이 있는지, 자신의 원래 이름이 기억이 나지않습니다.');
+    console.log('생각이 깊어질수록 어둠 역시 짙어지기 시작했습니다.');
+    console.log('<...>');
+    console.log('그러다가 당신은 나아가기로 결심합니다.');
+    console.log('...갑자기 어둠속에서 무언가 달려옵니다!');
     recoveryEncounter();
     AttackStage();
+    while (encounterKillCount < 30) {
+      console.log('---------------')
+      console.log('...아직도 영문을 모르겠습니다. 허나 분명한것은 어둠속에 악의가 가득찼다는것입니다.')
+      console.log('무언가 거대한 의지가 속삭입니다 - 나아가라- 홀린듯 발걸음을 옮겨봅니다.');
+      console.log('...또다시 어둠속에서 무언가 달려옵니다!');
+      recoveryEncounter();
+      AttackStage();
+    }
   }
   initialize();
 }

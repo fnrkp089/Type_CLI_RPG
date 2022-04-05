@@ -17,15 +17,15 @@ export class Player extends Units{
     this.attack += 1;
     this.speed += 0.2;
     this.maxHp += 5;
-    this.curHp += this.maxHp
+    this.curHp = this.maxHp
     return `플레이어의 레벨이 올랐습니다! 현재레밸: ${this.level}`
   }
 
   addExp(target: {exp: number}): void {
-    this.exp - target.exp
+    this.exp -= target.exp
     if (this.exp <= 0) {
       this.levelUp();
-      this.exp *= -1
+      this.exp =this.exp * (-1)
     }
   }
 }
