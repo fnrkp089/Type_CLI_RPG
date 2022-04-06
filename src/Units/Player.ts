@@ -1,9 +1,12 @@
 import { Units } from "./Units";
+import { Items } from "../Item/Item";
 const chalk = require('chalk');
 const log = console.log
 export class Player extends Units{
-  constructor(name: string, maxHp: number, attack: number, speed: number, exp: number, turn: number, level: number, unitActive: boolean) {
+  public inventory: Items[]
+  constructor(name: string, maxHp: number, attack: number, speed: number, exp: number, turn: number, level: number, unitActive: boolean, inventory: Items[]) {
     super(name, maxHp, attack, speed, exp, turn, level, unitActive);
+    this.inventory = inventory
   }
 
   recovery(): void {
@@ -31,5 +34,12 @@ export class Player extends Units{
   }
   skillTarget(target: { curHp: number }): void {
     target.curHp -= this.attack * 3;
+  }
+  healPlayer(Item: { value: number }, action: number): void{
+    this.curHp += Item.value
+    if (this.curHp >= this.maxHp)
+      this.curHp = this.maxHp
+    this.inventory.splice(action)
+    console.log(chalk`{green 플레이어의 체력을 10만큼 회복했습니다. 현재체력: ${this.curHp}}`);
   }
 }

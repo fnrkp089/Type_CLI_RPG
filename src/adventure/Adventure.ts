@@ -1,15 +1,6 @@
 import readlineSync = require('readline-sync');
 import { Player } from '../Units/Player' //플레이어 클래스
-import { Units } from '../Units/Units' //유닛 클래스
 const chalk = require('chalk');
-
-export const generateNomalEnemy = (): Units => { // 노말 적 생성 함수
-  const nomalEnemies: string[] = ['비탄에 찬 노예', '허공을 응시하는 노파', '의구심을 품은 방랑자', '답을 찾아 헤메이는 자', '두 눈을 감은 자'];
-  const randomInt: number = Math.floor(Math.random() * ((nomalEnemies.length - 1))) ;
-  const nomalEnemyName: string = nomalEnemies[randomInt];
-  let encounter = new Units(nomalEnemyName, 10, 1, 1, 10, 0, 1, true)
-  return encounter
-}
 
 export const adventureDark = (nowPlayer: Player): void => { //모험 단계
   let graphTurn = true;
@@ -52,6 +43,7 @@ export const adventureDark = (nowPlayer: Player): void => { //모험 단계
         console.log(chalk`{red 최대 체력: ${nowPlayer.maxHp} / 현재 체력: ${nowPlayer.curHp}}`)
         console.log(chalk`{yellow 현재 레벨:${nowPlayer.level}}`)
         console.log('---------------')
+        console.log(nowPlayer)
         graphTurn = false;
       break;
           
