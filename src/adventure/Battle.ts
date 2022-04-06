@@ -63,6 +63,7 @@ export const userAction = (nowPlayer: Player, encounter: Units | Elite): void =>
         }
         
       case '3':
+        console.log(nowPlayer)
         if (nowPlayer.inventory.length === 0) {
           console.log(`소지품에 아무런 물건도 존재하지 않습니다.`);
           break;
@@ -125,7 +126,6 @@ export const attackStage = (nowPlayer: Player, encounter: Units | Elite, encount
         userAction(nowPlayer, encounter);
         encounterAction(nowPlayer, encounter, encounterKillCount);
       } else {
-
         encounterAction(nowPlayer, encounter, encounterKillCount);
         userAction(nowPlayer, encounter);
       }
