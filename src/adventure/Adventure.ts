@@ -52,3 +52,31 @@ export const adventureDark = (nowPlayer: Player): void => { //모험 단계
     }
   }
 }
+
+export const endingTheme = (nowPlayer: Player):void => {
+  console.log('답을 찾아낸듯한 자가 단말마의 비명을 지르며 쓰러졌습니다.');
+  setTimeout(function(){
+    console.log('이젠 의문점을 알수 있을것같습니다.');
+    console.log('여기는 어디고 나는 누구인지에 대한 답이, 여기 죽어버린 시체의 품에 있는 쪽지에 적혀있을것입니다...');
+  }, 1000);
+  setTimeout(function () {
+    console.log(chalk`-----------------------------------`);
+    console.log(chalk`{yellow 제작기간 2일}`);
+  }, 2000);
+  setTimeout(function(){
+    console.log(chalk`{green 플랫폼팀 화이팅!}`);
+  }, 3000);
+  setTimeout(function(){
+    console.log(chalk`{bold 타입스크립트 어렵다...}`);
+  }, 4000);
+  setTimeout(function(){
+    console.log(chalk`{bold 플레이해주시고 시청해주셔서 감사합니다}`);
+    console.log(chalk`-----------------------------------`);
+  }, 5000);
+  setTimeout(function(){
+    console.log(chalk`{bold 이제서야 당신은 당신이 누구인지, 위대한 의지가 누구인지 깨닫고 세상을 끝낼 하나의 주문을 외칩니다}`);
+  }, 6000);
+  setTimeout(function () {
+    console.log(chalk`{green "컨트롤 + C"}`);
+  }, 8000);
+}

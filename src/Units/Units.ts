@@ -1,5 +1,4 @@
 const chalk = require('chalk');
-const log = console.log
 interface IPortion {
   name: string;
   info: string;
@@ -27,7 +26,13 @@ export class Units { //유닛
     this.level = level;
     this.unitActive = unitActive;
   }
-  hitTarget(target: {curHp: number }) {
+  hitTarget(target: { curHp: number, shield?: number }) {
+    if (target.shield > 0) {
+      console.log(chalk`{blue.bold 상대방의 얇은 막이 공격을 조금 흡수하고 사라집니다!}`);
+      let trueDmg = this.attack -= target.shield;
+      target.shield = 0;
+      target.curHp -= trueDmg
+    }
     target.curHp -= this.attack;
   }
 }

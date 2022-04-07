@@ -4,7 +4,7 @@ import { Player } from '../Units/Player' //플레이어 클래스
 import { Units } from '../Units/Units' //유닛 클래스
 import { Items } from '../Item/Item';
 import { Elite } from '../Units/Elite';
-
+import { Boss } from '../Units/Boss'
 
 export const generatePlayer = (playerName: string): Player => { // 플레이어 생성 함수
   let nowPlayer = new Player(playerName, 20, 1, 1, 0, 0, 1, true, [])
@@ -27,7 +27,12 @@ export const generateEliteEnemy = (): Elite => {
   return encounter
 }
 
-export const userAction = (nowPlayer: Player, encounter: Units | Elite): void => { // 전투시 유저의 턴
+export const generateBoss = (): Boss => {
+  let encounter = new Boss('답을 찾아낸 자', 50, 5, 2, 50, 0, 20, true)
+  return encounter
+}
+
+export const userAction = (nowPlayer: Player, encounter: Units | Elite | Boss): void => { // 전투시 유저의 턴
   let graphTurn = true;
   while (graphTurn === true) {
     console.log('---------------')
@@ -40,7 +45,7 @@ export const userAction = (nowPlayer: Player, encounter: Units | Elite): void =>
     const attackComment: string = attackCommentList[randomInt];
     const skillComment: string = skillCommentList[randomInt];
     switch (action) {
-      case '1':
+      case '1': // 일반공격
         nowPlayer.hitTarget(encounter)
         console.log(chalk`당신은 ${encounter.name}에게 ${attackComment}{red ${nowPlayer.attack}} 의 공격을 가했습니다.`);
         console.log(chalk`현재 ${encounter.name}의 남은 체력 : {green [${encounter.maxHp}/${encounter.curHp}]}`);
@@ -50,7 +55,7 @@ export const userAction = (nowPlayer: Player, encounter: Units | Elite): void =>
         graphTurn = false;
         break;
       
-      case '2':
+      case '2': //특수공격
         if (nowPlayer.turn === 2) {
           nowPlayer.skillTarget(encounter)
           console.log(chalk`당신은 ${encounter.name}에게 {yellow ${skillComment}} {red ${nowPlayer.attack * 3}}의 공격을 가했습니다.`);
@@ -62,8 +67,7 @@ export const userAction = (nowPlayer: Player, encounter: Units | Elite): void =>
           break;
         }
         
-      case '3':
-        console.log(nowPlayer)
+      case '3': // 아이템 사용
         if (nowPlayer.inventory.length === 0) {
           console.log(`소지품에 아무런 물건도 존재하지 않습니다.`);
           break;
@@ -88,12 +92,29 @@ export const userAction = (nowPlayer: Player, encounter: Units | Elite): void =>
     }
   }
 }
-export const encounterAction = (nowPlayer: Player, encounter: Units | Elite , encounterKillCount: number): void => { //전투시 적의 턴 함수
+export const encounterAction = (nowPlayer: Player, encounter: Units | Elite | Boss, encounterKillCount: number): void => { //전투시 적의 턴 함수
   if (nowPlayer.unitActive === true && encounter.curHp > 0) {
-    if ('Elite' in encounter && encounter.turn === 2) {
+    if ('Elite' in encounter && encounter.turn === 2) { //엘리트 몹
       encounter.skillTarget(nowPlayer)
       console.log(chalk`{bold ${encounter.name}}가 검은 기운으로 넘실거리더니 {red.bold ${encounter.attack * 2}}의 공격을 가했습니다!!!`);
       console.log(`현재 당신의 남은 체력 : ${chalk.green(`[${nowPlayer.maxHp}/${nowPlayer.curHp}]`)}`);
+      encounter.turn = 0;
+    } else if ('Boss' in encounter && encounter.turn === 3) { // 보스몹
+      encounter.skillTarget(nowPlayer)
+      console.log(chalk`{bold ${encounter.name}}가 검은 기운으로 넘실거리더니 {red.bold ${encounter.attack * 2}}의 공격을 가했습니다!!!`);
+      console.log(`현재 당신의 남은 체력 : ${chalk.green(`[${nowPlayer.maxHp}/${nowPlayer.curHp}]`)}`);
+      encounter.turn++;
+    } else if ('Boss' in encounter && encounter.turn === 5) {
+      encounter.skillTarget(nowPlayer)
+      console.log(chalk`{bold ${encounter.name}}가 검은 기운으로 넘실거리더니 {red.bold ${encounter.attack * 2}}의 공격을 가했습니다!!!`);
+      console.log(`현재 당신의 남은 체력 : ${chalk.green(`[${nowPlayer.maxHp}/${nowPlayer.curHp}]`)}`);
+      encounter.generateShield();
+      encounter.turn++;
+    } else if ('Boss' in encounter && encounter.turn === 7) {
+      encounter.skillTarget(nowPlayer)
+      console.log(chalk`{bold ${encounter.name}}가 검은 기운으로 넘실거리더니 {red.bold ${encounter.attack * 2}}의 공격을 가했습니다!!!`);
+      console.log(`현재 당신의 남은 체력 : ${chalk.green(`[${nowPlayer.maxHp}/${nowPlayer.curHp}]`)}`);
+      encounter.greaterHeal();
       encounter.turn = 0;
     } else {
       encounter.hitTarget(nowPlayer)
@@ -112,28 +133,36 @@ export const encounterAction = (nowPlayer: Player, encounter: Units | Elite , en
     encounter.unitActive = false;
     nowPlayer.addExp(encounter)
     console.log(nowPlayer.name + '은' + encounter.name + '에게 [답]을 주었습니다.');
-    const portion: Items = {name: '작은 포션', info: '작은 포션이다', value: 10}
-    console.log(portion)
-    nowPlayer.inventory.push(portion)
-    encounterKillCount++;
+    if ('Elite' in encounter) {
+      function randomNum(min, max){
+        var randNum = Math.floor(Math.random()*(max-min+1)) + min;
+        return randNum;
+      }
+      let randPortion = randomNum(1, 10)
+      if (randPortion >= 1 && randPortion <= 3) {
+        const portion: Items = { name: '작은 물약', info: '작은 포션이다', value: 10 }
+        console.log(chalk`{bold ${encounter.name}}가 {green 작은 물약을 떨어트렸습니다, 물약을 인벤토리에 넣었습니다.}`);
+        nowPlayer.inventory.push(portion)
+      }
+    }
   }
 }
 
-export const attackStage = (nowPlayer: Player, encounter: Units | Elite, encounterKillCount: number): void => { // 마주침 단계
+export const attackStage = (nowPlayer: Player, encounter: Units | Elite | Boss, encounterKillCount: number): number => { // 마주침 단계 / 죽일시 턴 상승
   if (encounter.unitActive) {
     while (encounter.curHp > 0) {
       if (nowPlayer.speed >= encounter.speed) {
         userAction(nowPlayer, encounter);
         encounterAction(nowPlayer, encounter, encounterKillCount);
       } else {
+        console.log(chalk`{red.bold 당신이 행동을 옮기기전 먼저 상대가 재빠르게 달려듭니다!!!}`);
         encounterAction(nowPlayer, encounter, encounterKillCount);
         userAction(nowPlayer, encounter);
       }
+    } if (encounterKillCount < 10) {
+      console.log(chalk`{yellow 답을 찾기까지 앞으로... 10 / ${encounterKillCount + 1}}`)
     }
+    return encounterKillCount = encounterKillCount + 1;
   }
 }
 
-export const recoveryEncounter = (encounter): Units | Elite => {
-  encounter = generateNomalEnemy();
-  return encounter
-}

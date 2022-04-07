@@ -1,16 +1,18 @@
 import { Units } from "./Units";
 import { Items } from "../Item/Item";
 const chalk = require('chalk');
-const log = console.log
 export class Player extends Units{
   public inventory: Items[]
+  public deathCount: number
   constructor(name: string, maxHp: number, attack: number, speed: number, exp: number, turn: number, level: number, unitActive: boolean, inventory: Items[]) {
     super(name, maxHp, attack, speed, exp, turn, level, unitActive);
     this.inventory = inventory
+    this.deathCount = 0
   }
 
   recovery(): void {
     this.curHp = this.maxHp;
+    this.deathCount++;
     console.log(chalk`{bold -다시한번. 나아가서 진실을 목도하라-}`);
     console.log(chalk`체력이 다시 회복됩니다: {green 현재 HP: ${this.curHp}}`);
     console.log('---------------');
